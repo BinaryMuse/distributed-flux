@@ -37,19 +37,21 @@ Flux.prototype.callback = function() {
 };
 
 Flux.prototype.applyMessage = function(msg) {
+  var firstState = this._state;
+
   if (this._optimistic) {
     var optimisticId = generateUuid(),
         optimisticState = this._handleMessage(this._state, msg);
     this._optimisticMessages[optimisticId] = msg;
     this._optimisticLog.push(optimisticId);
     this._state = optimisticState;
-    this.callback();
+    if (firstState !== this._state) this.callback();
     return optimisticId;
   } else {
     this._sequenceId++;
     this._state = this._handleMessage(this._state, msg);
     this._recordMessage(msg);
-    this.callback();
+    if (firstState !== this._state) this.callback();
     return this._sequenceId;
   }
 };
@@ -70,7 +72,8 @@ Flux.prototype.confirmMessage = function(messageOrOptSeqId, realSeqId) {
 
 Flux.prototype.resolvePendingConfirmedMessages = function(callbackAfter) {
   var index = -1,
-      search = this._sequenceId + 1;
+      search = this._sequenceId + 1,
+      startState = this._state;
 
   for (var i = 0; i < this._pendingConfirmedMessages.length; i++) {
     if (this._pendingConfirmedMessages[i][1] === search) {
@@ -84,7 +87,7 @@ Flux.prototype.resolvePendingConfirmedMessages = function(callbackAfter) {
     this._pendingConfirmedMessages.splice(index, 1);
     this.applyConfirmedMessage(update[0], update[1]);
     this.resolvePendingConfirmedMessages(false);
-    if (callbackAfter !== false) this.callback();
+    if (callbackAfter !== false && this._state !== startState) this.callback();
   }
 };
 
