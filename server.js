@@ -7,7 +7,8 @@ var express = require("express"),
 
 var app = express(),
     server = http.Server(app),
-    io = socketio(server);
+    io = socketio(server),
+    port = process.env.PORT || 8081;
 
 app.use(express.static(__dirname + "/public"));
 
@@ -24,6 +25,6 @@ io.on("connection", function(socket) {
   });
 });
 
-server.listen(8081, function() {
-  console.log("http://localhost:8081/");
+server.listen(port, function() {
+  console.log("http://localhost:" + port + "/");
 });
