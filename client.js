@@ -45,6 +45,9 @@ socket.once("state", function(state, prevState, seqId) {
 });
 
 socket.on("message", function(msg, id) {
-  console.log("Message", id, "from server:", msg);
-  flux.confirmMessage(msg, id);
+  var serverClientDelay = parseInt(config.serverClientDelay, 10);
+  setTimeout(function() {
+    console.log("Message", id, "from server:", msg);
+    flux.confirmMessage(msg, id);
+  }, serverClientDelay);
 });
