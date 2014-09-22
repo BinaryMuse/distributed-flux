@@ -4,6 +4,8 @@ Initial tests in using a [Flux](http://facebook.github.io/flux/)-style architect
 
     npm install && npm start
 
+Open `http://localhost:8081` in multiple browsers. Control the listening port with the `PORT` environment variable.
+
 Overview
 ========
 
