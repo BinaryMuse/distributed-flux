@@ -49,6 +49,7 @@ Flux.prototype.applyMessage = function(msg) {
     this._sequenceId++;
     this._state = this._handleMessage(this._state, msg);
     this._recordMessage(msg);
+    this.callback();
     return this._sequenceId;
   }
 };
@@ -67,7 +68,7 @@ Flux.prototype.confirmMessage = function(messageOrOptSeqId, realSeqId) {
   }
 };
 
-Flux.prototype.resolvePendingConfirmedMessages = function() {
+Flux.prototype.resolvePendingConfirmedMessages = function(callbackAfter) {
   var index = -1,
       search = this._sequenceId + 1;
 
@@ -82,7 +83,8 @@ Flux.prototype.resolvePendingConfirmedMessages = function() {
     var update = this._pendingConfirmedMessages[index];
     this._pendingConfirmedMessages.splice(index, 1);
     this.applyConfirmedMessage(update[0], update[1]);
-    this.resolvePendingConfirmedMessages();
+    this.resolvePendingConfirmedMessages(false);
+    if (callbackAfter !== false) this.callback();
   }
 };
 
@@ -103,7 +105,6 @@ Flux.prototype.applyConfirmedMessage = function(optimisticSeqId, realSeqId) {
     var message = this._optimisticMessages[msgId];
     return this._handleMessage(acc, message);
   }.bind(this), newState);
-  this.callback();
 
   delete this._optimisticMessages[optimisticSeqId];
 };
