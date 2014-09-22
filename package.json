@@ -1,0 +1,23 @@
+{
+  "name": "distributed-flux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js & watchify -v -d -t reactify -o public/client.js client.js",
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "beefy": "^2.1.1",
+    "browserify": "^5.12.0",
+    "chai": "^1.9.1",
+    "express": "^4.9.4",
+    "immutable": "^2.0.17",
+    "mocha": "^1.21.4",
+    "reactify": "^0.14.0",
+    "socket.io": "^1.1.0",
+    "watchify": "^1.0.2"
+  }
+}
